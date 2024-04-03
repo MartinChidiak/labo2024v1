@@ -11,7 +11,7 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(100069, 101531, 401507, 700001, 900001,)
+PARAM$semillas <- c(100069, 101531, 401507, 700001, 900001)
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -55,7 +55,7 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
   # cada columna es el vector de probabilidades
 
 
-  # calculo la ganancia en testing  qu es fold==2
+  # calculo la ganancia en testing  que es fold==2
   ganancia_test <- dataset[
     fold == 2,
     sum(ifelse(prediccion[, "BAJA+2"] > 0.025,
@@ -108,16 +108,19 @@ archivo_salida <- "./exp/HT2020/gridsearch.txt"
 # genero la data.table donde van los resultados del Grid Search
 tb_grid_search <- data.table( max_depth = integer(),
                               min_split = integer(),
+                              vcp = integer(),
+                              vminbucket = integer(),
                               ganancia_promedio = numeric() )
 
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+for (vmax_depth in c(4, 6, 8, 10, 12, 14,16)) {
+  for (vmin_split in c(10,20,40,80,160,320,640)) 
     # notar como se agrega
-    for (vcp in c(-0.5,-0.1,0,0.1,0.5)){
-      for (vminbucket in c(0,1,2,3,4,5)){
+    for (vcp in c(-0.5,-0.3,-0.1,0,0.1))
+      for (vminbucket in c(2,4,8,16,32,vmin_split/4))
+      {
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
     param_basicos <- list(
       "cp" = vcp, # complejidad minima
@@ -132,10 +135,10 @@ for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
     # agrego a la tabla
     tb_grid_search <- rbindlist( 
       list( tb_grid_search, 
-            list( vmax_depth, vmin_split, ganancia_promedio) ) )
-    }
-   } 
-  }
+            list( vmax_depth, vmin_split,vcp,vminbucket, ganancia_promedio) ) )
+    
+   
+      }
 
   # escribo la tabla a disco en cada vuelta del loop mas externo
   Sys.sleep(2)  # espero un par de segundos
