@@ -104,13 +104,25 @@ dataset[, pos := sequence(.N), by = fold]
 # Esta hermosa curva muestra como en el mentiroso training
 #   la ganancia es siempre mejor que en el real testing
 # segundo grafico solo los primeros 20k enviso
+
+label <- paste(
+  "\nMinSplit:", PARAM$minsplit, "\nMinBucket:", PARAM$minbucket, "\nMaxDepth:", PARAM$maxdepth,
+  "\nTrainGain:", max(dataset$ganancia_acumulada[dataset$fold == 1]),
+  "\nTestGain:", max(dataset$ganancia_acumulada[dataset$fold == 2]),
+  sep = " "
+)
+
 gra <- ggplot(
            data = dataset[pos <= 20000],
-           aes( x = pos, y = ganancia_acumulada,
-                color = ifelse(fold == 1, "train", "test") )
-             ) + geom_line()
+           aes(x = pos, y = ganancia_acumulada,
+            color = ifelse(fold == 1, "train", "test"))
+             ) + geom_line() + 
+             labs(color = label)
+
+
 x11()
-print( gra )
+print(gra)
+
 
 cat( "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n" )
 cat( "Test  gan max: ", dataset[fold==2, max(ganancia_acumulada)], "\n" )
