@@ -34,9 +34,9 @@ param_sets <- list(
 
 for (i in seq_along(param_sets)) {
   # Set parameters
-  varminsplit <- param_sets[[i]]$varminsplit
-  varminbucket <- param_sets[[i]]$varminbucket
-  varmaxdepth <- param_sets[[i]]$varmaxdepth
+  varminsplit <- param_sets[[i]]$minsplit
+  varminbucket <- param_sets[[i]]$minbucket
+  varmaxdepth <- param_sets[[i]]$maxdepth
 
 
 # parameetros rpart
@@ -154,7 +154,4 @@ for (arbolito in 1:PARAM$num_trees_max) {
     cat(arbolito, " ")
   }
 }
-
-
 }
-

@@ -23,10 +23,10 @@ PARAM$experimento <- 3510
 # 7) cp = -1, minsplit = 2000, minbucket = 200, maxdepth = 10, num_trees_max = 500
 
 varcp <- -1
-varminsplit <- 250
-varminbucket <- 100
-varmaxdepth <- 14
-varnum_trees_max <- 500
+varminsplit <- 100
+varminbucket <- 5
+varmaxdepth <- 6
+varnum_trees_max <- 5
 
 # parameetros rpart
 PARAM$rpart_param <- list(
