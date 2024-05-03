@@ -15,7 +15,9 @@ envg <- env()
 
 envg$EXPENV <- list()
 envg$EXPENV$exp_dir <- "~/buckets/b1/exp11/"
+dir.create(envg$EXPENV$exp_dir, showWarnings = FALSE)
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow11/"
+dir.create(envg$EXPENV$wf_dir, showWarnings = FALSE)
 envg$EXPENV$wf_dir_local <- "~/flow11/"
 envg$EXPENV$repo_dir <- "~/labo2024v1/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
