@@ -26,7 +26,7 @@ envg$EXPENV$arch_sem <- "mis_semillas.txt"
 
 # default
 envg$EXPENV$gcloud$RAM <- 512
-envg$EXPENV$gcloud$cCPU <- 8
+envg$EXPENV$gcloud$cCPU <- 24
 
 #------------------------------------------------------------------------------
 # Error catching
@@ -206,7 +206,7 @@ TS_strategy_guantesblancos_202109 <- function( pmyexp, pinputexps, pserver="loca
 
   # Atencion  0.1  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling ,  0.1  es quedarse con el 10% de los CONTINUA
-  param_local$train$undersampling <- 0.3
+  param_local$train$undersampling <- 0.7
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -280,7 +280,7 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
 
-    min_sum_hessian_in_leaf = 0.5, #  min_sum_hessian_in_leaf >= 0.0
+    min_sum_hessian_in_leaf = 0.1, #  min_sum_hessian_in_leaf >= 0.0
     
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
@@ -291,24 +291,24 @@ HT_tuning_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
-    scale_pos_weight = 0.4, # scale_pos_weight > 0.0
+    scale_pos_weight = 5, # scale_pos_weight > 0.0
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     extra_trees = FALSE,
-    learning_rate = 0.01, # Sugerencia del profe, y mis experimentos dieron también usar este learning rate
+    learning_rate = 0.01, 
 
     # White Gloves Bayesian Optimization, with a happy narrow exploration
 
     min_gain_to_split = c( 0.1, 10.0 ), # min_gain_to_split >= 0.0
     feature_fraction = c( 0.3, 0.4 ),
-    min_data_in_leaf = c( 10L, 2000L, "integer" ),   
-    num_leaves = c( 8L, 2048L, "integer" )
+    min_data_in_leaf = c( 200L, 1200L, "integer" ),   
+    num_leaves = c( 1500L, 3000L, "integer" )
   )
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 50 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 40 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -401,6 +401,6 @@ corrida_guantesblancos_202109( "gb01" )
 # Luego partiendo de  FE0001
 # genero TS0002, HT0002 y ZZ0002
 
-corrida_guantesblancos_202107( "gb02" )
+#corrida_guantesblancos_202107( "gb02" )
 
  
