@@ -1,6 +1,5 @@
 # Corrida general del Workflow de semillerio
 
-
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
@@ -14,18 +13,16 @@ require("ParamHelpers")
 envg <- env()
 
 envg$EXPENV <- list()
-envg$EXPENV$exp_dir <- "~/buckets/b1/exp16/"
-dir.create(envg$EXPENV$exp_dir, showWarnings = FALSE)
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow16/"
-dir.create(envg$EXPENV$wf_dir, showWarnings = FALSE)
-envg$EXPENV$wf_dir_local <- "~/flow16/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/exp15/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow15/"
+envg$EXPENV$wf_dir_local <- "~/flow15/"
 envg$EXPENV$repo_dir <- "~/labo2024v1/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$arch_sem <- "mis_semillas.txt"
 
 # default
-envg$EXPENV$gcloud$RAM <- 512
-envg$EXPENV$gcloud$cCPU <- 24
+envg$EXPENV$gcloud$RAM <- 64
+envg$EXPENV$gcloud$cCPU <- 8
 
 #------------------------------------------------------------------------------
 # Error catching
@@ -163,38 +160,23 @@ TS_strategy_baseline_202109 <- function( pmyexp, pinputexps, pserver="local")
   param_local$meta$script <- "/src/workflow-01/z551_TS_training_strategy.r"
 
 
-   param_local$future <- c(202109)
-  param_local$final_train <- c(202107, 202106, 
-                                  202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, # 202006 - Excluyo este mes con variables rotas
-    #202005, 202004, 202003, Excluyo 3 meses de pandemia fuertes 
-    202002, 202001,
-    201912, 201911, # 201910, - Excluyo este mes con variables rotas
-    201909, 201908, 201907, 201906, # 201905, - Excluyo este mes con variables rotas
-    201904, 201903 #, 201902, 201901 - Excluyo estos meses para tener misma cantidad que en el training
-    )
+  param_local$future <- c(202109)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011)
 
 
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, # 202006 - Excluyo este mes con variables rotas
-    #202005, 202004, 202003, Excluyo 3 meses de pandemia fuertes 
-    202002, 202001,
-    201912, 201911, #201910, - Excluyo este mes con variables rotas
-    201909, 201908, 201907, 201906, #201905, - Excluyo este mes con variables rotas
-    201904, 201903, 201902, 201901 # Incluyo estos 2 ultimos meses que no aplican arriba
-    )
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
 
   # undersampling  baseline
-  param_local$train$undersampling <- 0.5
+  param_local$train$undersampling <- 0.2
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
 # Training Strategy baseline  202107
 
-TS_strategy_guantesblancos_202107 <- function( pmyexp, pinputexps, pserver="local")
+TS_strategy_baseline_202107 <- function( pmyexp, pinputexps, pserver="local")
 {
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
@@ -202,29 +184,15 @@ TS_strategy_guantesblancos_202107 <- function( pmyexp, pinputexps, pserver="loca
 
 
   param_local$future <- c(202107)
-  param_local$final_train <- c(202105, 202104, # Acá pongo los dos considerados en el validation y testing del training
-    202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, # 202006
-    #202005, 202004, 202003, 
-    202002, 202001, 
-    201912, 201911, #201910, 
-    201909, 201908, 201907, 201906, #201905, 
-    201904, 201903
-    ) # en esta parte excluyo dos meses para compensar
+  param_local$final_train <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009)
 
 
-  param_local$train$training <- c(202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, #202006,
-    #202005, 202004, 202003, 
-    202002, 202001, 
-    201912, 201911, #201910, 
-    201909, 201908, 201907, 201906, #201905, 
-    201904, 201903, 201902, 201901 # Incluyo dos adicionales para compensar
-    )
+  param_local$train$training <- c(202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007)
   param_local$train$validation <- c(202104)
   param_local$train$testing <- c(202105)
 
-  param_local$train$undersampling <- 0.5 # elijo quedarme con el 50%, de los CONTINUA, recomendacion otro grupo.
+  # undersampling  baseline
+  param_local$train$undersampling <- 0.2
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -255,7 +223,7 @@ HT_tuning_baseline <- function( pmyexp, pinputexps, pserver="local")
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
-    min_sum_hessian_in_leaf = 0.01, #  min_sum_hessian_in_leaf >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
@@ -265,7 +233,7 @@ HT_tuning_baseline <- function( pmyexp, pinputexps, pserver="local")
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 10.0, # scale_pos_weight > 0.0 pruebo darle mas peso a la clase minoritaria
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
@@ -273,15 +241,15 @@ HT_tuning_baseline <- function( pmyexp, pinputexps, pserver="local")
 
     extra_trees = FALSE,
     # Quasi  baseline, el minimo learning_rate es 0.02 !!
-    learning_rate = 0.01,
-    feature_fraction = c( 0.3, 0.4 ),
-    num_leaves = c( 1500L, 3000L, "integer" ),
-    min_data_in_leaf =  c( 200L, 1200L, "integer" )
+    learning_rate = c( 0.02, 0.5 ),
+    feature_fraction = c( 0.5, 0.9 ),
+    num_leaves = c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 100L, 2000L, "integer" )
   )
 
 
   # una Beyesian de Guantes Blancos, solo hace 15 iteraciones
-  param_local$bo_iteraciones <- 40 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 50 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -351,18 +319,18 @@ corrida_baseline_semillerio_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_baseline( "DT0001-sem", "competencia_2024.csv.gz")
-  CA_catastrophe_baseline( "CA0001-sem", "DT0001-sem" )
+  #DT_incorporar_dataset_baseline( "DT0001-sem", "competencia_2024.csv.gz")
+  #CA_catastrophe_baseline( "CA0001-sem", "DT0001-sem" )
 
-  DR_drifting_baseline( "DR0001-sem", "CA0001-sem" )
-  FE_historia_baseline( "FE0001-sem", "DR0001-sem" )
+  #DR_drifting_baseline( "DR0001-sem", "CA0001-sem" )
+  #FE_historia_baseline( "FE0001-sem", "DR0001-sem" )
 
-  TS_strategy_baseline_202109( "TS0001-sem", "FE0001-sem" )
+  #TS_strategy_baseline_202109( "TS0001-sem", "FE0001-sem" )
 
-  HT_tuning_baseline( "HT0001-sem", "TS0001-sem" )
+  #HT_tuning_baseline( "HT0001-sem", "TS0001-sem" )
 
   # El ZZ depente de HT y TS
-  ZZ_final_semillerio_baseline( "ZZ0001-sem", c("HT0001-sem","TS0001-sem") )
+  ZZ_final_semillerio_baseline( "ZZ0001-sem", c("HT0001","TS0001") )
 
 
   exp_wf_end( pnombrewf, pvirgen ) # linea fija
